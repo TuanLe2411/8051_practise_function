@@ -1,0 +1,141 @@
+C51 COMPILER V9.60.0.0   CRIPT                                                             02/06/2021 06:49:53 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CRIPT
+OBJECT MODULE PLACED IN cript.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE cript.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "port.h"
+   3          #include "cript.h"
+   4          #include "..\lib\display.h"
+   5          #include "..\lib\delay.h"
+   6          #include "..\lib\ADC0804.h"
+   7          #include "..\lib\timer.h"
+   8          #include "..\lib\sensor.h"
+   9          #include "..\lib\transport.h"
+  10          #include "..\lib\realtime.h"
+  11          
+  12          unsigned char * code Days[] = {"SUN","MON","TUE","WED","THU","FRI","SAT"};
+  13          
+  14          void lamp_sensor_control(){
+  15   1        unsigned char adc_value;
+  16   1        lamp_control = 0;
+  17   1        while(1)
+  18   1        {   
+  19   2          while(P0^0== 0){
+  20   3          adc_value = ADC0804_Read();
+  21   3          if(adc_value < 20){
+  22   4            lamp_control = 1;
+  23   4          }
+  24   3          if(adc_value > 60) {
+  25   4            lamp_control = 0;
+  26   4          }
+  27   3          if((adc_value >= 20)&&(adc_value <= 60)){
+  28   4            while(1) {
+  29   5              unsigned char dt;
+  30   5              dt = ADC0804_Read();
+  31   5              if((dt < 20)||(dt > 60)) break;
+  32   5              lamp_control = 1;
+  33   5              Delay_ms(500);
+  34   5              lamp_control = 0;
+  35   5              Delay_ms(500);
+  36   5            }
+  37   4          }
+  38   3         }
+  39   2        }
+  40   1      }
+  41          
+  42          void LCD1602_test(){
+  43   1        LCD_Init();
+  44   1        while(1){
+  45   2          LCD_SendCommand(0x80);
+  46   2          LCD_Puts("LCD test success");
+  47   2        }
+  48   1      }
+  49          
+  50          void display_realtime_DS1307_Lcd1602(){
+  51   1        unsigned char Hour, Minute, Second, Mode;
+  52   1        unsigned char Day, Date, Month, Year, old_second;
+  53   1        
+  54   1        Soft_I2c_Init();
+  55   1        LCD_Init();
+C51 COMPILER V9.60.0.0   CRIPT                                                             02/06/2021 06:49:53 PAGE 2   
+
+  56   1        Ds1307_Init();
+  57   1        
+  58   1        while(1)
+  59   1        {
+  60   2          Ds1307_Read_Time(&Hour, &Minute, &Second, &Mode);
+  61   2          if(old_second != Second)
+  62   2          { 
+  63   3            old_second = Second;
+  64   3            LCD_SendCommand(0x84);
+  65   3            LCD_PutChar(Hour/10+0x30);
+  66   3            LCD_PutChar(Hour%10+0x30);
+  67   3            LCD_PutChar(':');
+  68   3            LCD_PutChar(Minute/10+0x30);
+  69   3            LCD_PutChar(Minute%10+0x30);
+  70   3            LCD_PutChar(':');
+  71   3            LCD_PutChar(Second/10+0x30);
+  72   3            LCD_PutChar(Second%10+0x30);
+  73   3      
+  74   3            Ds1307_Read_Date(&Day, &Date, &Month, &Year);
+  75   3            LCD_SendCommand(0xC1);
+  76   3            LCD_Puts(Days[Day-1]);
+  77   3            LCD_PutChar(' ');
+  78   3            LCD_PutChar(Date/10+0x30);
+  79   3            LCD_PutChar(Date%10+0x30);
+  80   3            LCD_PutChar('/');
+  81   3            LCD_PutChar(Month/10+0x30);
+  82   3            LCD_PutChar(Month%10+0x30);
+  83   3            LCD_Puts("/20");
+  84   3            LCD_PutChar(Year/10+0x30);
+  85   3            LCD_PutChar(Year%10+0x30);
+  86   3          }
+  87   2        }
+  88   1      }
+  89          
+  90          void display_temp_DS28B20_lcd1602(){
+  91   1        unsigned int temp;
+  92   1        LCD_Init();
+  93   1        timer_0_init(1);
+  94   1        while(1)
+  95   1        {
+  96   2          LCD_Clear();
+  97   2          LCD_SendCommand(0x80);
+  98   2          LCD_Puts("Temp:");
+  99   2          temp = DS18B20_read_data();
+ 100   2          temp = (int)(temp*100/16.0);
+ 101   2          LCD_Display_Number(temp/100);
+ 102   2          LCD_PutChar('.');
+ 103   2          LCD_Display_Number(temp%100);
+ 104   2          LCD_Puts("oC");
+ 105   2          Timer0_delay_ms(60000);
+ 106   2        }
+ 107   1      }
+ 108          
+ 109          void timer_multiFunction_timer0_lcd1602(){
+ 110   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    560    ----
+   CONSTANT SIZE    =     79    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   CRIPT                                                             02/06/2021 06:49:53 PAGE 3   
+
+   DATA SIZE        =   ----      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

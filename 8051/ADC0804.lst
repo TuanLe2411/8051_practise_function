@@ -1,0 +1,56 @@
+C51 COMPILER V9.60.0.0   ADC0804                                                           02/06/2021 06:49:54 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ADC0804
+OBJECT MODULE PLACED IN .\ADC0804.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\Lib\ADC0804.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\ADC0804.lst
+                    -) TABS(2) OBJECT(.\ADC0804.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "ADC0804.h"
+   3          #include "port.h"
+   4          
+   5          unsigned char ADC0804_Read()
+   6          {
+   7   1        unsigned char kq;
+   8   1      
+   9   1        // Chon chip
+  10   1        ADC0804_CS = 0;
+  11   1      
+  12   1        // Tao xung bat dau chuyen doi
+  13   1        ADC0804_WR = 1;
+  14   1        ADC0804_WR = 0;
+  15   1        ADC0804_WR = 1;
+  16   1      
+  17   1        // Doi cho den khi chuyen doi xong
+  18   1        while(ADC0804_INTR);
+  19   1      
+  20   1        // Doc gia tri sau khi chuyen doi
+  21   1        ADC0804_CS = 0;
+  22   1        ADC0804_RD = 0;
+  23   1        kq = ADC0804_DATA;
+  24   1        ADC0804_RD = 1;
+  25   1        ADC0804_CS = 1;
+  26   1      
+  27   1        return kq;
+  28   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

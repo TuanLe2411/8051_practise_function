@@ -1,0 +1,12 @@
+".\timer.obj",
+"main.obj",
+".\Delay.obj",
+"cript.obj",
+".\transport.obj",
+".\realtime.obj",
+".\display.obj",
+".\ADC0804.obj",
+".\sensor.obj" 
+TO "8051" 
+
+ru 

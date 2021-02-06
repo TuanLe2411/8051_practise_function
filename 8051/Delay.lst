@@ -1,0 +1,61 @@
+C51 COMPILER V9.60.0.0   DELAY                                                             02/06/2021 06:49:53 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Delay.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\Lib\Delay.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Delay.lst) TA
+                    -BS(2) OBJECT(.\Delay.obj)
+
+line level    source
+
+   1          #include"delay.h"
+   2          #include"main.h"
+   3          
+   4          
+   5          void Delay_ms(unsigned int t)
+   6          {
+   7   1        unsigned int x, y;
+   8   1        for(x = 0; x<t; x++)
+   9   1        {
+  10   2          for(y=0; y<113; y++);
+  11   2        }
+  12   1      }
+  13          
+  14          void Timer0_delay_us(unsigned int t){
+  15   1        unsigned int load_value;
+  16   1        load_value = 65536 - t;
+  17   1        TH0 = load_value >> 8;
+  18   1        TL0 = load_value & 0x00FF;
+  19   1        //tai sao khi thay TR0=1 boi timer_0_start() thi lai loi???
+  20   1        TR0 = 1;
+  21   1        while(!TF0);
+  22   1        TR0 = 0;
+  23   1        TF0 = 0;
+  24   1      }
+  25          
+  26          void Timer0_delay_ms(unsigned int t){
+  27   1        int i;
+  28   1        for(i = 0; i<t; i++){
+  29   2          Timer0_delay_us(1000);
+  30   2        }
+  31   1      }
+  32          
+  33            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     82    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
